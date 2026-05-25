@@ -1,1 +1,33 @@
 
+name: Weekly Dance Hits Update
+
+on:
+  schedule:
+    - cron: '0 8 * * 1'    # Ogni Lunedì alle 8:00 (ora italiana)
+  workflow_dispatch:       # Permette di eseguire manualmente
+
+jobs:
+  update-chart:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Update Playlist
+        env:
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+        run: python main.py
+
+      - name: Success Message
+        run: echo "✅ Weekly Dance Hits by Roberto Fracchetta DJ aggiornata con successo!"
